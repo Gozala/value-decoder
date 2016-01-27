@@ -12,10 +12,11 @@
   "homepage": "https://github.com/Gozala/value-decoder",
   "main": "./lib/decoder.js",
   "dependencies": {
-    "value-result": "0.0.1"
+    "value-result": "0.0.2"
   },
   "devDependencies": {
     "babel-cli": "6.4.5",
+    "babel-plugin-remove-comments": "2.0.0",
     "babel-plugin-syntax-flow": "6.3.13",
     "babel-plugin-transform-es2015-modules-umd": "6.4.3",
     "babel-plugin-transform-flow-strip-types": "6.4.0",

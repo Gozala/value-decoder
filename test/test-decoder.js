@@ -2,7 +2,7 @@
 
 import test from "tape"
 import {ok, error} from "value-result"
-import * as Decoder from "../../value-decoder"
+import * as Decoder from ".."
 
 test("string", test => {
   const name = Decoder.tuple2(Array, Decoder.string, Decoder.string)

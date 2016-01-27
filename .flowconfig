@@ -1,15 +1,11 @@
 [ignore]
 .*/dist/.*
-.*/node_modules/test/.*
-.*/lib/.*
 
 [libs]
 
 [include]
 
 [options]
-module.name_mapper='../value-decoder' -> './src/decoder.js'
-module.name_mapper='value-result' -> 'value-result/src/result'
 
 suppress_comment= \\(.\\|\n\\)*\\@FlowIssue
 suppress_comment= \\(.\\|\n\\)*\\@FlowIgnore
