@@ -1,0 +1,264 @@
+/* @flow */
+
+import type {Result} from "value-result"
+
+type Dict <key, value> = {[key:key]: value}
+
+export type DecodingError = TypeError
+
+export type Decoded <value>
+  = DecodingError
+  | value
+
+export type Decoder <a> =
+  (input:any) => Decoded<a>
+
+declare export function decode <a>
+  (decoder:Decoder<a>, input:any):
+  Result<string, a>
+
+declare export function parse <a>
+  (decoder:Decoder<a>, code:string):
+  Result<string, a>
+
+declare export function string
+  (input:any):
+  Decoded<string>
+
+declare export function boolean
+  (input:any):
+  Decoded<boolean>
+
+declare export function number
+  (input:any):
+  Decoded<number>
+
+declare export function integer
+  (input:any):
+  Decoded<number>
+
+declare export function float
+  (input:any):
+  Decoded<number>
+
+declare export function number
+  (input:any):
+  Decoder<number>
+
+declare export function arbitrary
+  (input:any):
+  any
+
+declare export function nil <value>
+  (fallback:value):
+  Decoder<value>
+
+declare export function nan <value>
+  (fallback:value):
+  Decoder<value>
+
+declare export function array <value>
+  (decoder:Decoder<value>):
+  Decoder<Array<value>>
+
+declare export function tuple1 <a, value>
+  (read:(input:a) => value, decoder:Decoder<a>):
+  Decoder<value>
+
+
+declare export function tuple2 <a, b, value>
+  ( make:(a:a, b:b) => value
+  , a:Decoder<a>
+  , b:Decoder<b>
+  ):
+  Decoder<value>
+
+declare export function tuple3 <a, b, c, value>
+  ( make:(a:a, b:b, c:c) => value
+  , a:Decoder<a>
+  , b:Decoder<b>
+  , c:Decoder<c>
+  ):
+  Decoder<value>
+
+
+declare export function tuple4 <a, b, c, d, value>
+  ( make:(a:a, b:b, c:c, d:d) => value
+  , a:Decoder<a>
+  , b:Decoder<b>
+  , c:Decoder<c>
+  , d:Decoder<d>
+  ):
+  Decoder<value>
+
+
+declare export function tuple5 <a, b, c, d, e, value>
+  ( make:(a:a, b:b, c:c, d:d, e:e) => value
+  , a:Decoder<a>
+  , b:Decoder<b>
+  , c:Decoder<c>
+  , d:Decoder<d>
+  , e:Decoder<e>
+  ):
+  Decoder<value>
+
+declare export function tuple6 <a, b, c, d, e, f, value>
+  ( make:(a:a, b:b, c:c, d:d, e:e, f:f) => value
+  , a:Decoder<a>
+  , b:Decoder<b>
+  , c:Decoder<c>
+  , d:Decoder<d>
+  , e:Decoder<e>
+  , f:Decoder<f>
+  ):
+  Decoder<value>
+
+declare export function tuple7 <a, b, c, d, e, f, g, value>
+  ( make:(a:a, b:b, c:c, d:d, e:e, f:f, g:g) => value
+  , a:Decoder<a>
+  , b:Decoder<b>
+  , c:Decoder<c>
+  , d:Decoder<d>
+  , e:Decoder<e>
+  , f:Decoder<f>
+  , g:Decoder<g>
+  ):
+  Decoder<value>
+
+declare export function tuple8 <a, b, c, d, e, f, g, h, value>
+  ( make:(a:a, b:b, c:c, d:d, e:e, f:f, g:g, h:h) => value
+  , a:Decoder<a>
+  , b:Decoder<b>
+  , c:Decoder<c>
+  , d:Decoder<d>
+  , e:Decoder<e>
+  , f:Decoder<f>
+  , g:Decoder<g>
+  , h:Decoder<h>
+  ):
+  Decoder<value>
+
+declare export function field <value>
+  (name:string, decoder:Decoder<value>):
+  Decoder<value>
+
+
+declare export function at <value>
+  (path:Array<string>, decoder:Decoder<value>):
+  Decoder<value>
+
+declare export function object1 <a, value>
+  (make:(input:a) => value, a:Decoder<a>):
+  Decoder<value>
+
+
+declare export function object2 <a, b, value>
+  ( make:(a:a, b:b) => value
+  , a:Decoder<a>
+  , b:Decoder<b>
+  ):
+  Decoder<value>
+
+declare export function object3 <a, b, c, value>
+  ( make:(a:a, b:b, c:c) => value
+  , a:Decoder<a>
+  , b:Decoder<b>
+  , c:Decoder<c>
+  ):
+  Decoder<value>
+
+
+declare export function object4 <a, b, c, d, value>
+  ( make:(a:a, b:b, c:c, d:d) => value
+  , a:Decoder<a>
+  , b:Decoder<b>
+  , c:Decoder<c>
+  , d:Decoder<d>
+  ):
+  Decoder<value>
+
+
+declare export function object5 <a, b, c, d, e, value>
+  ( make:(a:a, b:b, c:c, d:d, e:e) => value
+  , a:Decoder<a>
+  , b:Decoder<b>
+  , c:Decoder<c>
+  , d:Decoder<d>
+  , e:Decoder<e>
+  ):
+  Decoder<value>
+
+declare export function object6 <a, b, c, d, e, f, value>
+  ( make:(a:a, b:b, c:c, d:d, e:e, f:f) => value
+  , a:Decoder<a>
+  , b:Decoder<b>
+  , c:Decoder<c>
+  , d:Decoder<d>
+  , e:Decoder<e>
+  , f:Decoder<f>
+  ):
+  Decoder<value>
+
+declare export function object7 <a, b, c, d, e, f, g, value>
+  ( make:(a:a, b:b, c:c, d:d, e:e, f:f, g:g) => value
+  , a:Decoder<a>
+  , b:Decoder<b>
+  , c:Decoder<c>
+  , d:Decoder<d>
+  , e:Decoder<e>
+  , f:Decoder<f>
+  , g:Decoder<g>
+  ):
+  Decoder<value>
+
+declare export function object8 <a, b, c, d, e, f, g, h, value>
+  ( make:(a:a, b:b, c:c, d:d, e:e, f:f, g:g, h:h) => value
+  , a:Decoder<a>
+  , b:Decoder<b>
+  , c:Decoder<c>
+  , d:Decoder<d>
+  , e:Decoder<e>
+  , f:Decoder<f>
+  , g:Decoder<g>
+  , h:Decoder<h>
+  ):
+  Decoder<value>
+
+
+declare export function dictionary <value>
+  (decoder:Decoder<value>):
+  Decoder<Dict<string, value>>
+
+declare export function maybe <value>
+  (decoder:Decoder<value>):
+  Decoder<?value>
+
+declare export function map <a, b>
+  ( f:(input:a) => b
+  , decoder:Decoder<a>
+  ):
+  Decoder<b>
+
+declare export function fail <value>
+  (message:string):
+  Decoder<value>
+
+declare export function succeed <value>
+  (input:value):
+  Decoder<value>
+
+declare export function chain <a, b>
+  ( decoder: Decoder<a>
+  , then: (input:a) => Decoder<b>
+  ):
+  Decoder<b>
+
+declare export function oneOf <a>
+  (decoders: Array<Decoder<a>>):
+  Decoder<a>
+
+declare export function custom <a, b>
+  ( decode: Decoder<a>
+  , parse: (input:a) => Result<string, b>
+  ):
+  Decoder<b>
