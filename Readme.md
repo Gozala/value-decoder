@@ -424,13 +424,13 @@ npm install value-decoder
 - [JSON.Decode library from Elm][JSON.Decode]
 - [Readers module from Addon-sdk][Addon-sdk readers]
 
-[npm-url]: https://npmjs.org/package/value-maybe
-[npm-image]: https://img.shields.io/npm/v/value-maybe.svg?style=flat
+[npm-url]: https://npmjs.org/package/value-decoder
+[npm-image]: https://img.shields.io/npm/v/value-decoder.svg?style=flat
 
-[travis-url]: https://travis-ci.org/Gozala/value-maybe
-[travis-image]: https://img.shields.io/travis/Gozala/value-maybe.svg?style=flat
+[travis-url]: https://travis-ci.org/Gozala/value-decoder
+[travis-image]: https://img.shields.io/travis/Gozala/value-decoder.svg?style=flat
 
-[gitter-url]: https://gitter.im/Gozala/value-maybe?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[gitter-url]: https://gitter.im/Gozala/value-decoder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 [gitter-image]: https://badges.gitter.im/Join%20Chat.svg
 
 [flow]:http://flowtype.org
