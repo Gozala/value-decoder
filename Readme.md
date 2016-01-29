@@ -104,10 +104,10 @@ const authorship =
 Handle an array with exactly two elements. Useful for points and simple pairs.
 
 ```js
-const point = Decoder.pair
+const point = Decoder.tuple2
   ( (x, y) => ({x, y})
-  , Decoder.Float
-  , Decoder.Float
+  , Decoder.float
+  , Decoder.float
   )
 
 const p = Decoder.decode(point, [3, 4])
@@ -116,8 +116,8 @@ p.value // => {x: 3, y: 4}
 
 const name = Decoder.tuple2
   ( (first, last) => `${first} ${last}`
-  , Decoder.String
-  , Decoder.String
+  , Decoder.string
+  , Decoder.string
   )
 
 const john = Decoder.decode(name, ["John","Doe"])
@@ -125,16 +125,16 @@ john.isOk // => true
 john.value // => "John Doe"
 ```
 
-#### `tuple3` / `triple`
+#### `tuple3`
 
 Handle an array with exactly three elements.
 
 ```js
 const point3D = Decoder.tuple3
   ( (x, y, z) => ({ x, y, z })
-  , Decoder.Float
-  , Decoder.Float
-  , Decoder.Float
+  , Decoder.float
+  , Decoder.float
+  , Decoder.float
   )
 
 const p = Decoder.decode(point3D, [3,4,5])
@@ -156,8 +156,8 @@ Applies the decoder to the field with the given name. Fails if the value is not 
 ```js
 const nameAndAge = Decoder.object2
   ( (name, age) => [name, age]
-  , Decoder.field("name", Decoder.String)
-  , Decoder.field("age", Decoder.Integer)
+  , Decoder.field("name", Decoder.string)
+  , Decoder.field("age", Decoder.integer)
   )
 ```
 
@@ -179,7 +179,7 @@ Apply a function to a decoder. You can use this function as `map` if you must (w
 ```js
 Decoder.object1
 ( Math.sqrt
-, Decoder.Field("x", Decoder.Float)
+, Decoder.field("x", Decoder.float)
 )
 ```
 
@@ -190,8 +190,8 @@ Use two different decoders on a JS value. This is nice for extracting multiple f
 ```js
 Decoder.object2
 ( (x, y) => [x, y]
-, Decoder.field("x", Decoder.Float)
-, Decoder.field("y", Decoder.Float)
+, Decoder.field("x", Decoder.float)
+, Decoder.field("y", Decoder.float)
 )
 ```
 
@@ -203,9 +203,9 @@ Use three different decoders on a JS value. This is nice for extracting multiple
 Decoder.object3
 ( (id, description, completed) =>
   ({id, description, completed})
-, Decoder.field("uuid", Decoder.String)
-, Decoder.field("text", Decoder.String)
-, Decoder.field("completed", Decoder.Boolean)
+, Decoder.field("uuid", Decoder.string)
+, Decoder.field("text", Decoder.string)
+, Decoder.field("completed", Decoder.boolean)
 )
 ```
 
@@ -219,7 +219,8 @@ Use 4 / 5 / 6 / 7 / 8 different decoders on a JS value. This is nice for extract
 Turn any object into a dictionary of key-value pairs.
 
 ```js
-const planetMasses = Decoder.dictionary(Decoder.Float
+const planetMasses = Decoder.dictionary(Decoder.float)
+
 Decoder.decode
   ( planetMasses
   , { mercury: 0.33, venus: 4.87, earth: 5.97 }
@@ -236,11 +237,18 @@ The following code decodes JSON objects that may not have a profession field.
 
 ```js
 const person = Decoder.object3
-  ( (name, age, profession) =>
-    ({ name, age, profession })
-  , Decoder.field("name", Decoder.String)
-  , Decoder.field("age", Decoder.Integer)
-  , Decoder.maybe(Decoder.field("profession", Decoder.String))
+  ( (name, born, died) =>
+    ( { name
+      , age:
+        ( died == null
+        ? new Date().getFullYear() - born
+        : died - born
+        )
+      }
+    )
+  , Decoder.field("name", Decoder.string)
+  , Decoder.field("born", Decoder.integer)
+  , Decoder.maybe(Decoder.field("died", Decoder.integer))
   )
 ```
 
@@ -252,18 +260,18 @@ Try out multiple different decoders. This is helpful when you are dealing with s
 const point = Decoder.oneOf
   ( [ Decoder.tuple2
       ( (x, y) => [x, y]
-      , Decoder.Float
-      , Decoder.Float
+      , Decoder.float
+      , Decoder.float
       )
     , Decoder.object2
       ( (x, y) => [x, y]
-      , Decoder.field("x", Decoder.Float)
-      , Decoder.field("y", Decoder.Float)
+      , Decoder.field("x", Decoder.float)
+      , Decoder.field("y", Decoder.float)
       )
     ]
   )
 
-const points = Decoder.Array(point)
+const points = Decoder.array(point)
 
 Decoder.decode(points, [[3,4], { x:0, y:0 }, [5,12]])
 ```
@@ -273,17 +281,17 @@ Decoder.decode(points, [[3,4], { x:0, y:0 }, [5,12]])
 Transform the value returned by a decoder. Most useful when paired with the `oneOf`.
 
 ```js
+const NewID =
+  uuid =>
+  ({uuid})
 
-const nullOr =
-  decoder =>
-  Decoder.oneOf
-  ( Decoder.Null(Nothing)
-  , Decoder.map(just, decoder)
-  )
+const oldID2q =
+  id =>
+  NewID(String(id))
 
 const userID = Decoder.oneOf
-  ( [ Decoder.map(OldID, Decoder.Integer)
-    , Decoder.map(NewID, Decoder.String)
+  ( [ Decoder.map(oldID2q, Decoder.integer)
+    , Decoder.map(NewID, Decoder.string)
     ]
   )
 ```
@@ -296,13 +304,13 @@ A decoder that always fails. Useful when paired with `chain` or `oneOf` to impro
 const point = Decoder.oneOf
   ( [ Decoder.tuple2
       ( makePoint
-      , Decoder.Float
-      , Decoder.Float
+      , Decoder.float
+      , Decoder.float
       )
     , Decoder.object2
       ( makePoint
-      , Decoder.Field("x", Decoder.Float)
-      , Decoder.Field("y", Decoder.Float)
+      , Decoder.field("x", Decoder.float)
+      , Decoder.field("y", Decoder.float)
       )
     , Decoder.fail("expecting some kind of point")
     ]
@@ -316,10 +324,10 @@ A decoder that always succeeds. Useful when paired with `chain` or `oneOf` but e
 ```js
 const point3D = Decoder.object3
   ( (x, y, z) => [x, y, z]
-  , Decoder.field("x", Decoder.Float)
-  , Decoder.field("y", Decoder.Float)
+  , Decoder.field("x", Decoder.float)
+  , Decoder.field("y", Decoder.float)
   , Decoder.oneOf
-    ( [ Decoder.field("z", Decoder.Float)
+    ( [ Decoder.field("z", Decoder.float)
       , Decoder.succeed(0)
       ]
     )
@@ -339,18 +347,19 @@ const shapeInfo =
   ( tag === "rectangle"
   ? Decoder.object2
     ( makeRectangle
-    , Decoder.field("width", Decoder.Float)
-    , Decoder.field("height", Decoder.Float)
+    , Decoder.field("width", Decoder.float)
+    , Decoder.field("height", Decoder.float)
     )
   : tag === "circle"
   ? Decoder.object1
     ( makeCircle
-    , Decoder.field("radius", Decoder.Float)
+    , Decoder.field("radius", Decoder.float)
+    )
   : Decoder.fail(`${tag} is not a recognized tag for shapes`)
   )
 
 const shape = Decoder.chain
-  ( Decoder.field("tag", Decoder.String)
+  ( Decoder.field("tag", Decoder.string)
   , shapeInfo
   )
 ```
@@ -358,7 +367,7 @@ const shape = Decoder.chain
 
 ### "Creative" Values
 
-#### `Arbitrary`
+#### `arbitrary`
 
 Bring in an arbitrary JSON value. Useful if you need to work with crazily formatted data. For example, this lets you create a parser for "variadic" lists where the first few types are different, followed by 0 or more of the same type.
 
@@ -366,14 +375,14 @@ Bring in an arbitrary JSON value. Useful if you need to work with crazily format
 const variadic2 =
   (f, a, b, c) =>
   Decoder.custom
-  ( Decoder.array(Decoder.Arbitrary)
+  ( Decoder.array(Decoder.arbitrary)
   , items =>
     ( items.length < 3
     ? Decoder.fail("expecting at least two elements in the array")
     : Result.map3
       ( f
-      , Decoder.decode a items[0]
-      , Decoder.decode b items[1]
+      , Decoder.decode(a, items[0])
+      , Decoder.decode(b, items[1])
       , combineResults
         ( items
           .slice(2)
@@ -389,7 +398,7 @@ const combineResults =
   .reduce
   ( (acc, item) =>
       Result.map2
-      ( (tail, head) => [head].concat(tail)
+      ( (tail, head) => [head, ...tail]
       , acc
       , item
       )

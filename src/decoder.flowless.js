@@ -4,11 +4,10 @@
 // on these functions. For details see flow issue #1319
 
 /*::
-import type {Result} from "value-result"
 import type {Decoded, Decoder} from "./decoder"
 */
 
-import {ok, error} from "value-result"
+import {read, isArray, decodingError, DecodingError} from "./core"
 
 export const tuple5 = /*::<a, b, c, d, e, value>*/
   ( make/*:(a:a, b:b, c:c, d:d, e:e) => value*/
@@ -220,33 +219,38 @@ export const object5 = /*::<a, b, c, d, e, value>*/
   , e/*:Decoder<e>*/
   )/*:Decoder<value>*/ =>
   input => {
-    const a$ = read(a, input)
-    if (a$ instanceof DecodingError) {
-      return a$
+    if (input !== null && typeof(input) === "object") {
+      const a$ = read(a, input)
+      if (a$ instanceof DecodingError) {
+        return a$
+      }
+
+      const b$ = read(b, input)
+      if (b$ instanceof DecodingError) {
+        return b$
+      }
+
+      const c$ = read(c, input)
+      if (c$ instanceof DecodingError) {
+        return c$
+      }
+
+      const d$ = read(d, input)
+      if (d$ instanceof DecodingError) {
+        return d$
+      }
+
+      const e$ = read(e, input)
+      if (e$ instanceof DecodingError) {
+        return e$
+      }
+
+
+      return make(a$, b$, c$, d$, e$)
     }
-
-    const b$ = read(b, input)
-    if (b$ instanceof DecodingError) {
-      return b$
+    else {
+      return decodingError(`an object`, input)
     }
-
-    const c$ = read(c, input)
-    if (c$ instanceof DecodingError) {
-      return c$
-    }
-
-    const d$ = read(d, input)
-    if (d$ instanceof DecodingError) {
-      return d$
-    }
-
-    const e$ = read(e, input)
-    if (e$ instanceof DecodingError) {
-      return e$
-    }
-
-
-    return make(a$, b$, c$, d$, e$)
   }
 
 export const object6 = /*::<a, b, c, d, e, f, value>*/
@@ -259,38 +263,43 @@ export const object6 = /*::<a, b, c, d, e, f, value>*/
   , f/*:Decoder<f>*/
   )/*:Decoder<value>*/ =>
   input => {
-    const a$ = read(a, input)
-    if (a$ instanceof DecodingError) {
-      return a$
+    if (input !== null && typeof(input) === "object") {
+      const a$ = read(a, input)
+      if (a$ instanceof DecodingError) {
+        return a$
+      }
+
+      const b$ = read(b, input)
+      if (b$ instanceof DecodingError) {
+        return b$
+      }
+
+      const c$ = read(c, input)
+      if (c$ instanceof DecodingError) {
+        return c$
+      }
+
+      const d$ = read(d, input)
+      if (d$ instanceof DecodingError) {
+        return d$
+      }
+
+      const e$ = read(e, input)
+      if (e$ instanceof DecodingError) {
+        return e$
+      }
+
+      const f$ = read(f, input)
+      if (f$ instanceof DecodingError) {
+        return f$
+      }
+
+
+      return make(a$, b$, c$, d$, e$, f$)
     }
-
-    const b$ = read(b, input)
-    if (b$ instanceof DecodingError) {
-      return b$
+    else {
+      return decodingError(`an object`, input)
     }
-
-    const c$ = read(c, input)
-    if (c$ instanceof DecodingError) {
-      return c$
-    }
-
-    const d$ = read(d, input)
-    if (d$ instanceof DecodingError) {
-      return d$
-    }
-
-    const e$ = read(e, input)
-    if (e$ instanceof DecodingError) {
-      return e$
-    }
-
-    const f$ = read(f, input)
-    if (f$ instanceof DecodingError) {
-      return f$
-    }
-
-
-    return make(a$, b$, c$, d$, e$, f$)
   }
 
 export const object7 = /*::<a, b, c, d, e, f, g, value>*/
@@ -304,42 +313,47 @@ export const object7 = /*::<a, b, c, d, e, f, g, value>*/
   , g/*:Decoder<g>*/
   )/*:Decoder<value>*/ =>
   input => {
-    const a$ = read(a, input)
-    if (a$ instanceof DecodingError) {
-      return a$
-    }
+    if (input !== null && typeof(input) === "object") {
+      const a$ = read(a, input)
+      if (a$ instanceof DecodingError) {
+        return a$
+      }
 
-    const b$ = read(b, input)
-    if (b$ instanceof DecodingError) {
-      return b$
-    }
+      const b$ = read(b, input)
+      if (b$ instanceof DecodingError) {
+        return b$
+      }
 
-    const c$ = read(c, input)
-    if (c$ instanceof DecodingError) {
-      return c$
-    }
+      const c$ = read(c, input)
+      if (c$ instanceof DecodingError) {
+        return c$
+      }
 
-    const d$ = read(d, input)
-    if (d$ instanceof DecodingError) {
-      return d$
-    }
+      const d$ = read(d, input)
+      if (d$ instanceof DecodingError) {
+        return d$
+      }
 
-    const e$ = read(e, input)
-    if (e$ instanceof DecodingError) {
-      return e$
-    }
+      const e$ = read(e, input)
+      if (e$ instanceof DecodingError) {
+        return e$
+      }
 
-    const f$ = read(f, input)
-    if (f$ instanceof DecodingError) {
-      return f$
-    }
+      const f$ = read(f, input)
+      if (f$ instanceof DecodingError) {
+        return f$
+      }
 
-    const g$ = read(f, input)
-    if (g$ instanceof DecodingError) {
-      return g$
-    }
+      const g$ = read(g, input)
+      if (g$ instanceof DecodingError) {
+        return g$
+      }
 
-    return make(a$, b$, c$, d$, e$, f$, g$)
+      return make(a$, b$, c$, d$, e$, f$, g$)
+    }
+    else {
+      return decodingError(`an object`, input)
+    }
   }
 
 export const object8 = /*::<a, b, c, d, e, f, g, h, value>*/
@@ -354,46 +368,50 @@ export const object8 = /*::<a, b, c, d, e, f, g, h, value>*/
   , h/*:Decoder<g>*/
   )/*:Decoder<value>*/ =>
   input => {
-    const a$ = read(a, input)
-    if (a$ instanceof DecodingError) {
-      return a$
+    if (input !== null && typeof(input) === "object") {
+      const a$ = read(a, input)
+      if (a$ instanceof DecodingError) {
+        return a$
+      }
+
+      const b$ = read(b, input)
+      if (b$ instanceof DecodingError) {
+        return b$
+      }
+
+      const c$ = read(c, input)
+      if (c$ instanceof DecodingError) {
+        return c$
+      }
+
+      const d$ = read(d, input)
+      if (d$ instanceof DecodingError) {
+        return d$
+      }
+
+      const e$ = read(e, input)
+      if (e$ instanceof DecodingError) {
+        return e$
+      }
+
+      const f$ = read(f, input)
+      if (f$ instanceof DecodingError) {
+        return f$
+      }
+
+      const g$ = read(g, input)
+      if (g$ instanceof DecodingError) {
+        return g$
+      }
+
+      const h$ = read(h, input)
+      if (h$ instanceof DecodingError) {
+        return h$
+      }
+
+      return make(a$, b$, c$, d$, e$, f$, g$, h$)
     }
-
-    const b$ = read(b, input)
-
-    if (b$ instanceof DecodingError) {
-      return b$
+    else {
+      return decodingError(`an object`, input)
     }
-
-    const c$ = read(c, input)
-
-    if (c$ instanceof DecodingError) {
-      return c$
-    }
-
-    const d$ = read(d, input)
-
-    if (d$ instanceof DecodingError) {
-      return d$
-    }
-
-    const e$ = read(e, input)
-
-    if (e$ instanceof DecodingError) {
-      return e$
-    }
-
-    const f$ = read(f, input)
-
-    if (f$ instanceof DecodingError) {
-      return f$
-    }
-
-    const h$ = read(f, input)
-
-    if (h$ instanceof DecodingError) {
-      return h$
-    }
-
-    return make(a$, b$, c$, d$, e$, f$, g$, h$)
   }

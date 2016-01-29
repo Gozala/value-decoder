@@ -6,21 +6,13 @@ import type {Decoded, Decoder} from "./decoder"
 */
 
 import {ok, error} from "value-result"
+import {DecodingError, decodingError, isArray, read} from "./core"
 export {tuple5, tuple6, tuple7, tuple8} from "./decoder.flowless"
 export {object5, object6, object7, object8} from "./decoder.flowless"
 
 
-const DecodingError = TypeError
-
-const decodingError =
-  (expected, actual) =>
-  new DecodingError
-  ( `${expected} expected but got ${JSON.stringify(actual)}` );
-
-
 const StringConstructor = ''.constructor;
 const NumberConstructor = (0).constructor;
-const isArray = Array.isArray;
 
 
 
@@ -249,16 +241,25 @@ export const field = /*::<value>*/
   : decodingError(`an object with field "${name}"`, input)
   )
 
+export const at = /*::<value>*/
+  (path/*:Array<string>*/, decoder/*:Decoder<value>*/)/*:Decoder<value>*/ =>
+  path.reduceRight((decoder, name) => field(name, decoder), decoder)
+
 export const object1 = /*::<a, value>*/
   (make/*:(input:a) => value*/, a/*:Decoder<a>*/)/*:Decoder<value>*/ =>
   input => {
-    const decoded = read(a, input)
-    const result =
-      ( decoded instanceof DecodingError
-      ? decoded
-      : make(decoded)
-      )
-    return result
+    if (input !== null && typeof(input) === "object") {
+      const decoded = read(a, input)
+      const result =
+        ( decoded instanceof DecodingError
+        ? decoded
+        : make(decoded)
+        )
+      return result
+    }
+    else {
+      return decodingError(`an object`, input)
+    }
   }
 
 export const object2 = /*::<a, b, value>*/
@@ -267,17 +268,22 @@ export const object2 = /*::<a, b, value>*/
   , b/*:Decoder<b>*/
   )/*:Decoder<value>*/ =>
   input => {
-    const a$ = read(a, input)
-    if (a$ instanceof DecodingError) {
-      return a$
-    }
+    if (input !== null && typeof(input) === "object") {
+      const a$ = read(a, input)
+      if (a$ instanceof DecodingError) {
+        return a$
+      }
 
-    const b$ = read(b, input)
-    if (b$ instanceof DecodingError) {
-      return b$
-    }
+      const b$ = read(b, input)
+      if (b$ instanceof DecodingError) {
+        return b$
+      }
 
-    return make(a$, b$)
+      return make(a$, b$)
+    }
+    else {
+      return decodingError(`an object`, input)
+    }
   }
 
 export const object3 = /*::<a, b, c, value>*/
@@ -287,23 +293,28 @@ export const object3 = /*::<a, b, c, value>*/
   , c/*:Decoder<c>*/
   )/*:Decoder<value>*/ =>
   input => {
-    const a$ = read(a, input)
-    if (a$ instanceof DecodingError) {
-      return a$
+    if (input !== null && typeof(input) === "object") {
+      const a$ = read(a, input)
+      if (a$ instanceof DecodingError) {
+        return a$
+      }
+
+      const b$ = read(b, input)
+      if (b$ instanceof DecodingError) {
+        return b$
+      }
+
+      const c$ = read(c, input)
+      if (c$ instanceof DecodingError) {
+        return c$
+      }
+
+
+      return make(a$, b$, c$)
     }
-
-    const b$ = read(b, input)
-    if (b$ instanceof DecodingError) {
-      return b$
+    else {
+      return decodingError(`an object`, input)
     }
-
-    const c$ = read(c, input)
-    if (c$ instanceof DecodingError) {
-      return c$
-    }
-
-
-    return make(a$, b$, c$)
   }
 
 export const object4 = /*::<a, b, c, d, value>*/
@@ -314,30 +325,53 @@ export const object4 = /*::<a, b, c, d, value>*/
   , d/*:Decoder<d>*/
   )/*:Decoder<value>*/ =>
   input => {
-    const a$ = read(a, input)
-    if (a$ instanceof DecodingError) {
-      return a$
+    if (input !== null && typeof(input) === "object") {
+      const a$ = read(a, input)
+      if (a$ instanceof DecodingError) {
+        return a$
+      }
+
+      const b$ = read(b, input)
+      if (b$ instanceof DecodingError) {
+        return b$
+      }
+
+      const c$ = read(c, input)
+      if (c$ instanceof DecodingError) {
+        return c$
+      }
+
+      const d$ = read(d, input)
+      if (d$ instanceof DecodingError) {
+        return d$
+      }
+
+
+      return make(a$, b$, c$, d$)
     }
-
-    const b$ = read(b, input)
-    if (b$ instanceof DecodingError) {
-      return b$
+    else {
+      return decodingError(`an object`, input)
     }
-
-    const c$ = read(c, input)
-    if (c$ instanceof DecodingError) {
-      return c$
-    }
-
-    const d$ = read(d, input)
-    if (d$ instanceof DecodingError) {
-      return d$
-    }
-
-
-    return make(a$, b$, c$, d$)
   }
 
+const unboundHasOwnProperty = ({}).hasOwnProperty
+
+export const dictionary = /*::<value>*/
+  (decoder/*:Decoder<value>*/)/*:Decoder<{[key:string]: value}>*/ =>
+  input => {
+    if (input !== null && typeof(input) === "object") {
+      const output = {}
+      for (let key in input) {
+        if (unboundHasOwnProperty.call(input, key)) {
+          output[key] = read(decoder, input[key])
+        }
+      }
+      return output
+    }
+    else {
+      return decodingError(`an object`, input)
+    }
+  }
 
 export const arbitrary/*:Decoder<any>*/ =
   input =>
@@ -358,7 +392,7 @@ export const custom = /*::<a, b>*/
         return result.value
       }
       else {
-        return decodingError(`custom decoder failed`, result.error);
+        return new DecodingError(`custom decoder failed: ${result.error}`);
       }
     }
   }
@@ -413,10 +447,6 @@ export const oneOf = /*::<a>*/
     , input
     )
   }
-
-const read = /*::<value>*/
-  (decoder/*:Decoder<value>*/, input/*:any*/)/*:Decoded<value>*/ =>
-  decoder(input)
 
 export const decode = /*::<value>*/
   (decoder/*:Decoder<value>*/, input/*:any*/)/*:Result<string, value>*/ => {
