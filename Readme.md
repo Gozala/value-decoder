@@ -1,5 +1,9 @@
 # value-decoder [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url]
 
+Library for turning arbitrary JS values into structured data. Library provides set of build in decoders and function to compose them in an arbitrary way to allow decoding even most exotic (unstructured) values. Both built-in and composed decoders can be then use to `decode` an `input` that will produce a [result][], which is either `ok` containing decoded `value` or an `error` containing string explaining the reason of failure.
+
+Library is uses [flow][] type checker and provides type annotations for all it's APIs so that decoded values not only have certain structure but that structure is also known to a type checker. In fact this is primary use case for this library & somewhat non idiomatic JS interface is there to allow type guarantees that are not otherwise possible.
+
 ## API
 
 ### Primitives
@@ -432,3 +436,4 @@ npm install value-decoder
 [flow]:http://flowtype.org
 [JSON.Decode]:http://package.elm-lang.org/packages/elm-lang/core/3.0.0/Json-Decode
 [Addon-sdk readers]:https://github.com/mozilla/addon-sdk/blob/master/lib/sdk/context-menu/readers.js
+[result]:https://github.com/gozala/value-result
